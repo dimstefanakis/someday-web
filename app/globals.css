@@ -41,6 +41,10 @@ body {
     scale(1.025);
 }
 
+.card-waiting {
+  opacity: 0;
+}
+
 .card-enter-left {
   animation: cardEnterLeft 1180ms cubic-bezier(0.16, 1, 0.3, 1) var(--card-delay) both;
 }

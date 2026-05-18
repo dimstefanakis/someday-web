@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const polaroids = [
   {
@@ -64,6 +64,32 @@ const polaroids = [
 
 export default function Home() {
   const [submitted, setSubmitted] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<ReadonlySet<string>>(() => new Set());
+  const [introReady, setIntroReady] = useState(false);
+
+  useEffect(() => {
+    if (loadedImages.size !== polaroids.length) {
+      return;
+    }
+
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let cancelled = false;
+
+    const startIntro = () => {
+      timeoutId = setTimeout(() => {
+        if (!cancelled) {
+          setIntroReady(true);
+        }
+      }, 120);
+    };
+
+    void (document.fonts?.ready ?? Promise.resolve()).then(startIntro, startIntro);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [loadedImages.size]);
 
   return (
     <main className="relative grid h-[100svh] overflow-hidden bg-black text-white">
@@ -81,7 +107,9 @@ export default function Home() {
               <article
                 key={card.id}
                 style={card.pose as CSSProperties}
-                className={`polaroid-card group absolute left-1/2 top-1/2 w-[min(52vw,228px)] rounded-[3px] bg-[#fbfaf5] p-[10px] pb-[86px] text-black shadow-[0_22px_58px_rgba(0,0,0,.6)] ${card.zIndex} ${card.animation}`}>
+                className={`polaroid-card group absolute left-1/2 top-1/2 w-[min(52vw,228px)] rounded-[3px] bg-[#fbfaf5] p-[10px] pb-[86px] text-black shadow-[0_22px_58px_rgba(0,0,0,.6)] ${card.zIndex} ${
+                  introReady ? card.animation : 'card-waiting'
+                }`}>
                 <div className="relative aspect-square w-full overflow-hidden rounded-[3px] bg-neutral-900">
                   <Image
                     src={card.image}
@@ -91,6 +119,17 @@ export default function Home() {
                     fetchPriority={card.id === 'japan' ? 'high' : undefined}
                     sizes="(max-width: 640px) 52vw, 228px"
                     className={`object-cover transition-transform duration-700 ease-out group-hover:scale-[1.045] ${card.imageClassName}`}
+                    onLoad={() => {
+                      setLoadedImages((currentLoadedImages) => {
+                        if (currentLoadedImages.has(card.id)) {
+                          return currentLoadedImages;
+                        }
+
+                        const nextLoadedImages = new Set(currentLoadedImages);
+                        nextLoadedImages.add(card.id);
+                        return nextLoadedImages;
+                      });
+                    }}
                   />
                   <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/20 to-transparent" />
                 </div>
