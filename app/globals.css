@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@500;700;800;900&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  --font-hand: 'Caveat', cursive;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-display);
+}
+
+.polaroid-card {
+  --card-x: 0px;
+  --card-y: 0px;
+  --card-rotate: 0deg;
+  --card-scale: 1;
+  --card-delay: 0ms;
+  transform: translate(calc(-50% + var(--card-x)), calc(-50% + var(--card-y)))
+    rotate(var(--card-rotate)) scale(var(--card-scale));
+  backface-visibility: hidden;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.polaroid-card:hover {
+  transform: translate(calc(-50% + var(--card-x)), calc(-50% + var(--card-y))) rotate(0deg)
+    scale(1.025);
+}
+
+.card-enter-left {
+  animation: cardEnterLeft 1180ms cubic-bezier(0.16, 1, 0.3, 1) var(--card-delay) both;
+}
+
+.card-enter-right {
+  animation: cardEnterRight 1180ms cubic-bezier(0.16, 1, 0.3, 1) var(--card-delay) both;
+}
+
+@keyframes cardEnterLeft {
+  0% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--card-x) - 300px), calc(-50% + var(--card-y) + 6px))
+      rotate(calc(var(--card-rotate) - 12deg)) scale(calc(var(--card-scale) * 0.9));
+    filter: blur(6px);
+  }
+  18% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  68% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--card-x)), calc(-50% + var(--card-y)))
+      rotate(var(--card-rotate)) scale(var(--card-scale));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--card-x)), calc(-50% + var(--card-y)))
+      rotate(var(--card-rotate)) scale(var(--card-scale));
+  }
+}
+
+@keyframes cardEnterRight {
+  0% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--card-x) + 300px), calc(-50% + var(--card-y) + 6px))
+      rotate(calc(var(--card-rotate) + 12deg)) scale(calc(var(--card-scale) * 0.9));
+    filter: blur(6px);
+  }
+  18% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  68% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--card-x)), calc(-50% + var(--card-y)))
+      rotate(var(--card-rotate)) scale(var(--card-scale));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--card-x)), calc(-50% + var(--card-y)))
+      rotate(var(--card-rotate)) scale(var(--card-scale));
+  }
+}
+
+@media (max-height: 720px) {
+  .polaroid-card {
+    width: min(46vw, 196px) !important;
+  }
+
+  .landing-copy {
+    max-width: 318px;
+    gap: 16px;
+  }
+
+  .landing-title {
+    font-size: clamp(28px, 9.4vw, 44px);
+    line-height: 0.85;
+  }
+
+  .landing-form input,
+  .landing-form button {
+    min-height: 42px;
+  }
+}
+
+@media (min-width: 768px) and (min-height: 760px) {
+  .landing-shell {
+    gap: 76px;
+  }
+
+  .landing-stage {
+    height: min(42svh, 370px);
+    max-width: 470px;
+  }
+
+  .polaroid-card {
+    width: 268px !important;
+  }
+
+  .landing-copy {
+    max-width: 420px;
+    gap: 22px;
+  }
+
+  .landing-title {
+    font-size: clamp(48px, 5.4vw, 68px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
