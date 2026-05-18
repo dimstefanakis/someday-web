@@ -84,8 +84,8 @@ export default function Home() {
               <article
                 key={card.id}
                 style={card.pose as CSSProperties}
-                className={`polaroid-card group absolute left-1/2 top-1/2 aspect-[0.7] w-[min(52vw,228px)] rounded-[3px] bg-[#fbfaf5] p-[10px] pb-[76px] text-black shadow-[0_22px_58px_rgba(0,0,0,.6)] ${card.zIndex} ${card.animation}`}>
-                <div className="relative h-full overflow-hidden rounded-[3px] bg-neutral-900">
+                className={`polaroid-card group absolute left-1/2 top-1/2 w-[min(52vw,228px)] rounded-[3px] bg-[#fbfaf5] p-[10px] pb-[86px] text-black shadow-[0_22px_58px_rgba(0,0,0,.6)] ${card.zIndex} ${card.animation}`}>
+                <div className="relative aspect-square w-full overflow-hidden rounded-[3px] bg-neutral-900">
                   <Image
                     src={card.image}
                     alt={card.alt}
