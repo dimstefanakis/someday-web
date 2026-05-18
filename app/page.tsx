@@ -7,7 +7,7 @@ import { useState } from 'react';
 const polaroids = [
   {
     id: 'japan',
-    title: 'Japan Summer',
+    title: 'Japan Summer Trip',
     date: 'May 2027',
     image: '/images/polaroid-1.jpg',
     alt: 'A Someday polaroid memory from a future Japan trip',
@@ -18,7 +18,7 @@ const polaroids = [
   },
   {
     id: 'coffee',
-    title: 'Morning Abroad',
+    title: 'Paris Weekend',
     date: 'Aug 2027',
     image: '/images/polaroid-2.jpg',
     alt: 'Two friends in a future cafe memory',
@@ -29,7 +29,7 @@ const polaroids = [
   },
   {
     id: 'afterparty',
-    title: 'One Day Soon',
+    title: 'Birthday Weekend',
     date: '2028',
     image: '/images/polaroid-3.jpg',
     alt: 'A warm future memory with friends',
@@ -40,7 +40,7 @@ const polaroids = [
   },
   {
     id: 'night',
-    title: 'Future Night',
+    title: 'Tokyo Nights',
     date: 'Soon',
     image: '/images/polaroid-4.jpg',
     alt: 'A future memory polaroid from Someday',
@@ -51,7 +51,7 @@ const polaroids = [
   },
   {
     id: 'summer',
-    title: 'Made It Out',
+    title: 'Lake House Summer',
     date: 'Later',
     image: '/images/polaroid-2.jpg',
     alt: 'A second lower polaroid from Someday',
@@ -84,7 +84,7 @@ export default function Home() {
               <article
                 key={card.id}
                 style={card.pose as CSSProperties}
-                className={`polaroid-card group absolute left-1/2 top-1/2 aspect-[0.78] w-[min(52vw,228px)] rounded-[3px] bg-[#fbfaf5] p-[10px] pb-[46px] text-black shadow-[0_22px_58px_rgba(0,0,0,.6)] ${card.zIndex} ${card.animation}`}>
+                className={`polaroid-card group absolute left-1/2 top-1/2 aspect-[0.7] w-[min(52vw,228px)] rounded-[3px] bg-[#fbfaf5] p-[10px] pb-[76px] text-black shadow-[0_22px_58px_rgba(0,0,0,.6)] ${card.zIndex} ${card.animation}`}>
                 <div className="relative h-full overflow-hidden rounded-[3px] bg-neutral-900">
                   <Image
                     src={card.image}
@@ -97,17 +97,21 @@ export default function Home() {
                   />
                   <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/20 to-transparent" />
                 </div>
-                <div className="absolute inset-x-3 bottom-[10px] flex items-end justify-between gap-3 font-hand text-[22px] font-bold leading-none">
-                  <span className="max-w-[68%]">{card.title}</span>
-                  <span className="whitespace-nowrap text-[17px]">{card.date}</span>
+                <div className="absolute inset-x-3 bottom-[25px] flex min-h-[57px] flex-col justify-center font-hand font-bold leading-none">
+                  <span className="max-w-[78%] text-[22px] leading-[0.92]">{card.title}</span>
                 </div>
+                <span className="absolute bottom-[10px] right-3 whitespace-nowrap font-hand text-[17px] font-bold leading-none">
+                  {card.date}
+                </span>
               </article>
             ))}
           </div>
 
           <div className="landing-copy relative z-40 flex w-full max-w-[350px] flex-col items-center gap-5 text-center">
-            <h1 className="landing-title max-w-[11ch] font-display text-[clamp(31px,10vw,52px)] font-black uppercase leading-[0.84] tracking-normal">
-              See your future memories
+            <h1 className="landing-title font-display text-[clamp(31px,10vw,52px)] font-black uppercase leading-[0.84] tracking-normal">
+              <span className="whitespace-nowrap">Your future</span>
+              <br />
+              <span className="whitespace-nowrap">camera roll</span>
             </h1>
 
             <form
@@ -132,7 +136,7 @@ export default function Home() {
               <button
                 type="submit"
                 className="min-h-11 rounded-full bg-white px-5 font-display text-[12px] font-black uppercase tracking-normal text-black transition duration-200 hover:scale-[1.015] hover:bg-[#f5f0df] active:scale-[0.985]">
-                see your future memories
+                Save your spot
               </button>
             </form>
 
