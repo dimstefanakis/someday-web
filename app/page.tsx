@@ -3,6 +3,12 @@
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
 import { useEffect, useState } from 'react';
+import {
+  collectSignupAttribution,
+  createMetaEventId,
+  trackMetaSignup,
+} from '../lib/meta-browser';
+import { trackTikTokSignup } from '../lib/tiktok-browser';
 
 const polaroids = [
   {
@@ -63,7 +69,10 @@ const polaroids = [
 ];
 
 export default function Home() {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [loadedImages, setLoadedImages] = useState<ReadonlySet<string>>(() => new Set());
   const [introReady, setIntroReady] = useState(false);
 
@@ -90,6 +99,49 @@ export default function Home() {
       clearTimeout(timeoutId);
     };
   }, [loadedImages.size]);
+
+  async function submitSignup(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const eventId = createMetaEventId('someday_signup');
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const response = await fetch('/api/signups', {
+        body: JSON.stringify({
+          attribution: collectSignupAttribution(),
+          email,
+          eventId,
+          pageUrl: window.location.href,
+          referrer: document.referrer || undefined,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+      });
+      const payload = (await response.json().catch(() => null)) as
+        | { error?: string; eventId?: string; ok?: boolean }
+        | null;
+
+      if (!response.ok) {
+        throw new Error(payload?.error || 'Could not save your spot.');
+      }
+
+      trackMetaSignup(payload?.eventId || eventId, email);
+      trackTikTokSignup(payload?.eventId || eventId, email);
+      setSubmitted(true);
+    } catch (error) {
+      setSubmitted(false);
+      setSubmitError(
+        error instanceof Error ? error.message : 'Could not save your spot.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <main className="relative grid h-[100svh] overflow-hidden bg-black text-white">
@@ -152,10 +204,7 @@ export default function Home() {
 
             <form
               className="landing-form flex w-full flex-col gap-1.5 rounded-[27px] border border-white/10 bg-white/[0.08] p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,.16),0_14px_40px_rgba(0,0,0,.45)] backdrop-blur-xl"
-              onSubmit={(event) => {
-                event.preventDefault();
-                setSubmitted(true);
-              }}>
+              onSubmit={submitSignup}>
               <label className="sr-only" htmlFor="email">
                 Email
               </label>
@@ -167,20 +216,32 @@ export default function Home() {
                 autoComplete="email"
                 inputMode="email"
                 placeholder="email"
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  setSubmitError('');
+                  setSubmitted(false);
+                }}
+                disabled={isSubmitting}
                 className="min-h-11 flex-1 bg-transparent px-4 font-display text-[15px] font-semibold text-white outline-none placeholder:text-white/38"
               />
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="min-h-11 rounded-full bg-white px-5 font-display text-[12px] font-black uppercase tracking-normal text-black transition duration-200 hover:scale-[1.015] hover:bg-[#f5f0df] active:scale-[0.985]">
-                Save your spot
+                {isSubmitting ? 'Saving...' : 'Save your spot'}
               </button>
             </form>
 
             <p
-              className={`h-4 font-display text-[12px] font-bold text-white/54 transition-opacity duration-300 ${
-                submitted ? 'opacity-100' : 'opacity-0'
-              }`}>
-              You are on the list.
+              className={`h-4 font-display text-[12px] font-bold transition-opacity duration-300 ${
+                submitted || submitError ? 'opacity-100' : 'opacity-0'
+              } ${submitError ? 'text-white/72' : 'text-white/54'}`}>
+              {submitError
+                ? submitError
+                : submitted
+                  ? 'You are on the list.'
+                  : ' '}
             </p>
           </div>
         </div>

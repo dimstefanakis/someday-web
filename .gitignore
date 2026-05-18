@@ -1,5 +1,9 @@
 .next/
+.vercel/
 node_modules/
 tsconfig.tsbuildinfo
+.env
 .env*.local
+.firecrawl/
 ChatGPT Image*.jpg
+.vercel
