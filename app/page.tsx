@@ -67,9 +67,6 @@ export default function Home() {
 
   return (
     <main className="relative grid h-[100svh] overflow-hidden bg-black text-white">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_36%,rgba(255,255,255,0.13),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.07),transparent_22%,transparent_74%,rgba(255,255,255,0.05))]" />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.17] [background-image:linear-gradient(rgba(255,255,255,.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.1)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(circle_at_center,black,transparent_72%)]" />
-
       <section className="relative mx-auto flex h-full w-full max-w-[500px] flex-col items-center px-5 pb-[max(16px,env(safe-area-inset-bottom))] pt-[max(20px,env(safe-area-inset-top))]">
         <p className="absolute left-5 top-[max(18px,env(safe-area-inset-top))] z-40 font-display text-[19px] font-black uppercase leading-[0.9] tracking-normal sm:left-7">
           Some
@@ -97,7 +94,7 @@ export default function Home() {
                   />
                   <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/20 to-transparent" />
                 </div>
-                <div className="absolute inset-x-3 bottom-[25px] flex min-h-[57px] flex-col justify-center font-hand font-bold leading-none">
+                <div className="absolute inset-x-3 bottom-[35px] flex min-h-[57px] flex-col justify-center font-hand font-bold leading-none">
                   <span className="max-w-[78%] text-[22px] leading-[0.92]">{card.title}</span>
                 </div>
                 <span className="absolute bottom-[10px] right-3 whitespace-nowrap font-hand text-[17px] font-bold leading-none">
