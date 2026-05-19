@@ -1,8 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import type { CSSProperties } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   collectSignupAttribution,
   createMetaEventId,
@@ -10,39 +9,33 @@ import {
 } from '../lib/meta-browser';
 import { trackTikTokSignup } from '../lib/tiktok-browser';
 
-const polaroids = [
+const railPolaroids = [
   {
     id: 'japan',
-    title: 'Japan Summer Trip',
+    title: 'Hawaii Summer',
     date: 'May 2027',
     image: '/images/polaroid-1.jpg',
     alt: 'A Someday polaroid memory from a future Japan trip',
     imageClassName: 'object-[50%_50%]',
-    zIndex: 'z-50',
-    animation: 'card-enter-left',
-    pose: { '--card-x': '0px', '--card-y': '-10px', '--card-rotate': '-2.4deg', '--card-scale': '0.98', '--card-delay': '560ms' },
+    railClassName: 'rotate-[-7deg] translate-y-2',
   },
   {
     id: 'coffee',
-    title: 'Paris Weekend',
+    title: 'Greek Weekend',
     date: 'Aug 2027',
     image: '/images/polaroid-2.jpg',
     alt: 'Two friends in a future cafe memory',
     imageClassName: 'object-[50%_50%] saturate-[1.04] brightness-[0.98]',
-    zIndex: 'z-30',
-    animation: 'card-enter-right',
-    pose: { '--card-x': '88px', '--card-y': '-34px', '--card-rotate': '10deg', '--card-scale': '0.86', '--card-delay': '380ms' },
+    railClassName: 'rotate-[4deg] -translate-y-1',
   },
   {
     id: 'afterparty',
-    title: 'Birthday Weekend',
+    title: 'Birthday',
     date: '2028',
     image: '/images/polaroid-3.jpg',
     alt: 'A warm future memory with friends',
     imageClassName: 'object-[50%_50%] contrast-[1.03] brightness-[0.94]',
-    zIndex: 'z-20',
-    animation: 'card-enter-left',
-    pose: { '--card-x': '-88px', '--card-y': '-32px', '--card-rotate': '-10.5deg', '--card-scale': '0.86', '--card-delay': '220ms' },
+    railClassName: 'rotate-[-2deg] translate-y-3',
   },
   {
     id: 'night',
@@ -51,20 +44,7 @@ const polaroids = [
     image: '/images/polaroid-4.jpg',
     alt: 'A future memory polaroid from Someday',
     imageClassName: 'object-[50%_50%] saturate-[1.06] brightness-[0.96]',
-    zIndex: 'z-40',
-    animation: 'card-enter-right',
-    pose: { '--card-x': '-72px', '--card-y': '30px', '--card-rotate': '-7.2deg', '--card-scale': '0.88', '--card-delay': '100ms' },
-  },
-  {
-    id: 'summer',
-    title: 'Lake House Summer',
-    date: 'Later',
-    image: '/images/polaroid-2.jpg',
-    alt: 'A second lower polaroid from Someday',
-    imageClassName: 'object-[62%_50%] saturate-[1.03] brightness-[0.92]',
-    zIndex: 'z-10',
-    animation: 'card-enter-left',
-    pose: { '--card-x': '76px', '--card-y': '34px', '--card-rotate': '7.8deg', '--card-scale': '0.87', '--card-delay': '40ms' },
+    railClassName: 'rotate-[8deg] -translate-y-2',
   },
 ];
 
@@ -73,32 +53,6 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [loadedImages, setLoadedImages] = useState<ReadonlySet<string>>(() => new Set());
-  const [introReady, setIntroReady] = useState(false);
-
-  useEffect(() => {
-    if (loadedImages.size !== polaroids.length) {
-      return;
-    }
-
-    let timeoutId: ReturnType<typeof setTimeout>;
-    let cancelled = false;
-
-    const startIntro = () => {
-      timeoutId = setTimeout(() => {
-        if (!cancelled) {
-          setIntroReady(true);
-        }
-      }, 120);
-    };
-
-    void (document.fonts?.ready ?? Promise.resolve()).then(startIntro, startIntro);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timeoutId);
-    };
-  }, [loadedImages.size]);
 
   async function submitSignup(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -145,63 +99,67 @@ export default function Home() {
 
   return (
     <main className="relative grid h-[100svh] overflow-hidden bg-black text-white">
-      <section className="relative mx-auto flex h-full w-full max-w-[500px] flex-col items-center px-5 pb-[max(16px,env(safe-area-inset-bottom))] pt-[max(20px,env(safe-area-inset-top))]">
-        <p className="absolute left-5 top-[max(18px,env(safe-area-inset-top))] z-40 font-display text-[19px] font-black uppercase leading-[0.9] tracking-normal sm:left-7">
-          Some
-          <br />
-          Day.
-        </p>
+      <section className="relative mx-auto flex h-full w-full max-w-[520px] flex-col px-5 pb-[max(10px,env(safe-area-inset-bottom))] pt-[max(16px,env(safe-area-inset-top))]">
+        <div className="flex items-start justify-between">
+          <p className="font-display text-[19px] font-black uppercase leading-[0.9] tracking-normal text-white">
+            Some
+            <br />
+            Day.
+          </p>
+        </div>
 
-        <div className="landing-shell flex flex-1 flex-col items-center justify-center gap-16 pt-10">
-          <div className="landing-stage relative h-[min(39svh,332px)] w-full max-w-[360px]">
-            <div className="absolute left-1/2 top-1/2 h-[82%] w-[76%] -translate-x-1/2 -translate-y-1/2 rounded-[38px] bg-white/10 blur-3xl" />
-            {polaroids.map((card) => (
-              <article
-                key={card.id}
-                style={card.pose as CSSProperties}
-                className={`polaroid-card group absolute left-1/2 top-1/2 w-[min(52vw,228px)] rounded-[3px] bg-[#fbfaf5] p-[10px] pb-[86px] text-black shadow-[0_22px_58px_rgba(0,0,0,.6)] ${card.zIndex} ${
-                  introReady ? card.animation : 'card-waiting'
-                }`}>
-                <div className="relative aspect-square w-full overflow-hidden rounded-[3px] bg-neutral-900">
-                  <Image
-                    src={card.image}
-                    alt={card.alt}
-                    fill
-                    loading="eager"
-                    fetchPriority={card.id === 'japan' ? 'high' : undefined}
-                    sizes="(max-width: 640px) 52vw, 228px"
-                    className={`object-cover transition-transform duration-700 ease-out group-hover:scale-[1.045] ${card.imageClassName}`}
-                    onLoad={() => {
-                      setLoadedImages((currentLoadedImages) => {
-                        if (currentLoadedImages.has(card.id)) {
-                          return currentLoadedImages;
-                        }
+        <div className="flex flex-1 flex-col justify-between gap-3 pt-8">
+          <div className="max-w-[390px] font-display text-[clamp(15px,4.15vw,17px)] font-medium leading-[1.31] tracking-normal text-white">
+            <p>
+              We built this because people keep postponing the life they want.
+            </p>
 
-                        const nextLoadedImages = new Set(currentLoadedImages);
-                        nextLoadedImages.add(card.id);
-                        return nextLoadedImages;
-                      });
-                    }}
-                  />
-                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/20 to-transparent" />
-                </div>
-                <div className="absolute inset-x-3 bottom-[35px] flex min-h-[57px] flex-col justify-center font-hand font-bold leading-none">
-                  <span className="max-w-[78%] text-[22px] leading-[0.92]">{card.title}</span>
-                </div>
-                <span className="absolute bottom-[10px] right-3 whitespace-nowrap font-hand text-[17px] font-bold leading-none">
-                  {card.date}
-                </span>
-              </article>
-            ))}
+            <div className="mt-6 space-y-4">
+              <p>Everyone has a plan sitting in the group chat.</p>
+
+              <p className="font-bold leading-[1.28]">
+                We should go to Japan.
+                <br />
+                We should rent a house this summer.
+                <br />
+                We should move cities.
+              </p>
+
+              <p>
+                <span className="font-bold">Someday</span> turns those plans
+                into photos before they happen.
+              </p>
+            </div>
           </div>
 
-          <div className="landing-copy relative z-40 flex w-full max-w-[350px] flex-col items-center gap-5 text-center">
-            <h1 className="landing-title font-display text-[clamp(31px,10vw,52px)] font-black uppercase leading-[0.84] tracking-normal">
-              <span className="whitespace-nowrap">Future photos</span>
-              <br />
-              <span className="whitespace-nowrap">with your gc</span>
-            </h1>
+          <div className="relative -mx-5 h-[154px] overflow-visible">
+            <div className="absolute left-1/2 top-3 flex w-[620px] -translate-x-1/2 items-start justify-center">
+              {railPolaroids.map((card) => (
+                <article
+                  key={card.id}
+                  className={`relative mx-[-8px] w-[116px] shrink-0 rounded-[3px] bg-[#fbfaf5] p-[7px] pb-[42px] text-black shadow-[0_18px_40px_rgba(0,0,0,.55)] ${card.railClassName}`}>
+                  <div className="relative aspect-square w-full overflow-hidden rounded-[3px] bg-neutral-900">
+                    <Image
+                      src={card.image}
+                      alt={card.alt}
+                      fill
+                      loading="eager"
+                      sizes="116px"
+                      className={`object-cover ${card.imageClassName}`}
+                    />
+                  </div>
+                  <span className="absolute inset-x-2 bottom-[16px] max-w-[78%] font-hand text-[16px] font-bold leading-[0.9]">
+                    {card.title}
+                  </span>
+                  <span className="absolute bottom-[7px] right-2 whitespace-nowrap font-hand text-[11px] font-bold leading-none">
+                    {card.date}
+                  </span>
+                </article>
+              ))}
+            </div>
+          </div>
 
+          <div className="relative z-40 flex w-full max-w-[350px] flex-col gap-2 self-center">
             <form
               className="landing-form flex w-full flex-col gap-1.5 rounded-[27px] border border-white/10 bg-white/[0.08] p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,.16),0_14px_40px_rgba(0,0,0,.45)] backdrop-blur-xl"
               onSubmit={submitSignup}>
@@ -229,12 +187,12 @@ export default function Home() {
                 type="submit"
                 disabled={isSubmitting}
                 className="min-h-11 rounded-full bg-white px-5 font-display text-[12px] font-black uppercase tracking-normal text-black transition duration-200 hover:scale-[1.015] hover:bg-[#f5f0df] active:scale-[0.985]">
-                {isSubmitting ? 'Saving...' : 'Unlock your future camera roll'}
+                {isSubmitting ? 'Saving...' : 'See the future'}
               </button>
             </form>
 
             <p
-              className={`h-4 font-display text-[12px] font-bold transition-opacity duration-300 ${
+              className={`h-4 text-center font-display text-[12px] font-bold transition-opacity duration-300 ${
                 submitted || submitError ? 'opacity-100' : 'opacity-0'
               } ${submitError ? 'text-white/72' : 'text-white/54'}`}>
               {submitError
