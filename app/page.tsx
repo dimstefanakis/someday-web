@@ -197,9 +197,9 @@ export default function Home() {
 
           <div className="landing-copy relative z-40 flex w-full max-w-[350px] flex-col items-center gap-5 text-center">
             <h1 className="landing-title font-display text-[clamp(31px,10vw,52px)] font-black uppercase leading-[0.84] tracking-normal">
-              <span className="whitespace-nowrap">Your future</span>
+              <span className="whitespace-nowrap">Future photos</span>
               <br />
-              <span className="whitespace-nowrap">camera roll</span>
+              <span className="whitespace-nowrap">with your gc</span>
             </h1>
 
             <form
@@ -229,7 +229,7 @@ export default function Home() {
                 type="submit"
                 disabled={isSubmitting}
                 className="min-h-11 rounded-full bg-white px-5 font-display text-[12px] font-black uppercase tracking-normal text-black transition duration-200 hover:scale-[1.015] hover:bg-[#f5f0df] active:scale-[0.985]">
-                {isSubmitting ? 'Saving...' : 'Save your spot'}
+                {isSubmitting ? 'Saving...' : 'Unlock your future camera roll'}
               </button>
             </form>
 
