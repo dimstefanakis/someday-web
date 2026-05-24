@@ -1,35 +1,30 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
-import {
-  collectSignupAttribution,
-  createMetaEventId,
-  trackMetaSignup,
-} from '../lib/meta-browser';
-import { trackTikTokSignup } from '../lib/tiktok-browser';
+import Link from 'next/link';
+import { track } from '@vercel/analytics';
 
 const railPolaroids = [
   {
-    id: 'japan',
+    id: 'hawaii',
     title: 'Hawaii Summer',
     date: 'May 2027',
     image: '/images/polaroid-1.jpg',
-    alt: 'A Someday polaroid memory from a future Japan trip',
+    alt: 'A Someday polaroid memory from a future trip',
     imageClassName: 'object-[50%_50%]',
     railClassName: 'rotate-[-7deg] translate-y-2',
   },
   {
-    id: 'coffee',
+    id: 'greek',
     title: 'Greek Weekend',
     date: 'Aug 2027',
     image: '/images/polaroid-2.jpg',
-    alt: 'Two friends in a future cafe memory',
+    alt: 'Two friends in a future weekend memory',
     imageClassName: 'object-[50%_50%] saturate-[1.04] brightness-[0.98]',
     railClassName: 'rotate-[4deg] -translate-y-1',
   },
   {
-    id: 'afterparty',
+    id: 'birthday',
     title: 'Birthday',
     date: '2028',
     image: '/images/polaroid-3.jpg',
@@ -38,7 +33,7 @@ const railPolaroids = [
     railClassName: 'rotate-[-2deg] translate-y-3',
   },
   {
-    id: 'night',
+    id: 'tokyo',
     title: 'Tokyo Nights',
     date: 'Soon',
     image: '/images/polaroid-4.jpg',
@@ -49,57 +44,9 @@ const railPolaroids = [
 ];
 
 export default function Home() {
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState('');
-
-  async function submitSignup(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const eventId = createMetaEventId('someday_signup');
-
-    setIsSubmitting(true);
-    setSubmitError('');
-
-    try {
-      const response = await fetch('/api/signups', {
-        body: JSON.stringify({
-          attribution: collectSignupAttribution(),
-          email,
-          eventId,
-          pageUrl: window.location.href,
-          referrer: document.referrer || undefined,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      });
-      const payload = (await response.json().catch(() => null)) as
-        | { error?: string; eventId?: string; ok?: boolean }
-        | null;
-
-      if (!response.ok) {
-        throw new Error(payload?.error || 'Could not save your spot.');
-      }
-
-      trackMetaSignup(payload?.eventId || eventId, email);
-      trackTikTokSignup(payload?.eventId || eventId, email);
-      setSubmitted(true);
-    } catch (error) {
-      setSubmitted(false);
-      setSubmitError(
-        error instanceof Error ? error.message : 'Could not save your spot.'
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
   return (
     <main className="relative grid h-[100svh] overflow-hidden bg-black text-white">
-      <section className="relative mx-auto flex h-full w-full max-w-[520px] flex-col px-5 pb-[max(10px,env(safe-area-inset-bottom))] pt-[max(16px,env(safe-area-inset-top))]">
+      <section className="relative mx-auto flex h-full w-full max-w-[520px] flex-col px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-[max(16px,env(safe-area-inset-top))]">
         <div className="flex items-start justify-between">
           <p className="font-display text-[19px] font-black uppercase leading-[0.9] tracking-normal text-white">
             Some
@@ -160,46 +107,14 @@ export default function Home() {
           </div>
 
           <div className="relative z-40 flex w-full max-w-[350px] flex-col gap-2 self-center">
-            <form
-              className="landing-form flex w-full flex-col gap-1.5 rounded-[27px] border border-white/10 bg-white/[0.08] p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,.16),0_14px_40px_rgba(0,0,0,.45)] backdrop-blur-xl"
-              onSubmit={submitSignup}>
-              <label className="sr-only" htmlFor="email">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                inputMode="email"
-                placeholder="email"
-                value={email}
-                onChange={(event) => {
-                  setEmail(event.target.value);
-                  setSubmitError('');
-                  setSubmitted(false);
-                }}
-                disabled={isSubmitting}
-                className="min-h-11 flex-1 bg-transparent px-4 font-display text-[15px] font-semibold text-white outline-none placeholder:text-white/38"
-              />
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="min-h-11 rounded-full bg-white px-5 font-display text-[12px] font-black uppercase tracking-normal text-black transition duration-200 hover:scale-[1.015] hover:bg-[#f5f0df] active:scale-[0.985]">
-                {isSubmitting ? 'Saving...' : 'See the future'}
-              </button>
-            </form>
-
-            <p
-              className={`h-4 text-center font-display text-[12px] font-bold transition-opacity duration-300 ${
-                submitted || submitError ? 'opacity-100' : 'opacity-0'
-              } ${submitError ? 'text-white/72' : 'text-white/54'}`}>
-              {submitError
-                ? submitError
-                : submitted
-                  ? 'You are on the list.'
-                  : ' '}
+            <Link
+              href="/try"
+              onClick={() => track('try_memory_clicked')}
+              className="flex min-h-14 w-full items-center justify-center rounded-full bg-white px-6 text-center font-display text-[13px] font-black uppercase tracking-normal text-black shadow-[0_18px_48px_rgba(255,255,255,.16)] transition duration-200 hover:scale-[1.015] hover:bg-[#f5f0df] active:scale-[0.985]">
+              See it before it happens
+            </Link>
+            <p className="text-center font-display text-[12px] font-bold text-white/44">
+              Name the plan. Add your people. Get the first photo.
             </p>
           </div>
         </div>

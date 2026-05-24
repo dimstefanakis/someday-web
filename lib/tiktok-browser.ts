@@ -47,3 +47,34 @@ export function trackTikTokSignup(eventId: string, email: string) {
 
   window.setTimeout(track, 250);
 }
+
+export function trackTikTokMemoryCreated(
+  eventId: string,
+  properties: Record<string, unknown>
+) {
+  if (typeof window === 'undefined' || !TIKTOK_PIXEL_CODE) {
+    return;
+  }
+
+  const track = () => {
+    const payload = {
+      content_name: 'Someday generated future memory',
+      content_type: 'web_memory_generator',
+      ...properties,
+    };
+
+    window.ttq?.track?.('SomedayMemoryCreated', payload, {
+      event_id: eventId,
+    });
+    window.ttq?.track?.('CompleteRegistration', payload, {
+      event_id: eventId,
+    });
+  };
+
+  if (typeof window.ttq?.track === 'function') {
+    track();
+    return;
+  }
+
+  window.setTimeout(track, 250);
+}

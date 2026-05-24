@@ -2,6 +2,7 @@ export const META_EVENT_NAMES = [
   'CompleteRegistration',
   'Lead',
   'PageView',
+  'SomedayMemoryCreated',
 ] as const;
 
 export type MetaEventName = (typeof META_EVENT_NAMES)[number];

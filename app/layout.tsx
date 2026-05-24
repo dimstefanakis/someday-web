@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 import { MetaPixel } from '../components/meta-pixel';
 import { TikTokPixel } from '../components/tiktok-pixel';
 import './globals.css';
@@ -29,6 +30,7 @@ export default function RootLayout({
         <MetaPixel />
         <TikTokPixel />
         {children}
+        <Analytics />
       </body>
     </html>
   );

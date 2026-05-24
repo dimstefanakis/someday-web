@@ -146,6 +146,29 @@ export function trackMetaSignup(eventId: string, email: string) {
   });
 }
 
+export function trackMetaMemoryCreated(
+  eventId: string,
+  customData: Record<string, unknown>
+) {
+  const payload = {
+    content_category: 'Web memory generator',
+    content_name: 'Someday generated future memory',
+    ...customData,
+  };
+
+  trackMetaBrowserEvent({
+    customData: payload,
+    eventId,
+    eventName: 'SomedayMemoryCreated',
+  });
+
+  trackMetaBrowserEvent({
+    customData: payload,
+    eventId,
+    eventName: 'Lead',
+  });
+}
+
 function trackMetaBrowserEvent({
   attempt = 0,
   customData,
@@ -174,6 +197,11 @@ function trackMetaBrowserEvent({
         eventName,
       });
     }, 250);
+    return;
+  }
+
+  if (eventName === 'SomedayMemoryCreated') {
+    window.fbq('trackCustom', eventName, customData || {}, { eventID: eventId });
     return;
   }
 

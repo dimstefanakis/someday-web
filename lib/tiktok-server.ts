@@ -12,6 +12,8 @@ export type TikTokServerEventInput = {
   referrer?: string;
   ttclid?: string;
   ttp?: string;
+  eventName?: string;
+  properties?: Record<string, unknown>;
 };
 
 export async function sendTikTokConversionEvent({
@@ -24,6 +26,8 @@ export async function sendTikTokConversionEvent({
   referrer,
   ttclid,
   ttp,
+  eventName = 'CompleteRegistration',
+  properties,
 }: TikTokServerEventInput) {
   const pixelCode =
     process.env.TIKTOK_PIXEL_CODE || process.env.NEXT_PUBLIC_TIKTOK_PIXEL_CODE;
@@ -36,17 +40,18 @@ export async function sendTikTokConversionEvent({
   const payload = {
     data: [
       compactObject({
-        event: 'CompleteRegistration',
+        event: eventName,
         event_id: eventId,
         event_time: eventTime ?? Math.floor(Date.now() / 1000),
         page: compactObject({
           referrer,
           url: eventSourceUrl,
         }),
-        properties: {
+        properties: compactObject({
           content_name: 'Someday early access signup',
           content_type: 'waitlist',
-        },
+          ...properties,
+        }),
         user: compactObject({
           email: email ? hashSha256(email) : undefined,
           ip: clientIpAddress,
