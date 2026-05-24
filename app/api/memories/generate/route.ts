@@ -441,7 +441,7 @@ export async function POST(request: Request) {
       clientUserAgent,
       customData: analyticsCustomData,
       eventId,
-      eventName: 'Lead',
+      eventName: 'CompleteRegistration',
       eventSourceUrl: pageUrl,
       fbc: attribution.fbc,
       fbp: attribution.fbp,
@@ -485,7 +485,7 @@ export async function POST(request: Request) {
       ttp: attribution.ttp,
     }),
   ]);
-  const leadTracked =
+  const registrationTracked =
     analyticsResults[0].status === 'fulfilled' && analyticsResults[0].value;
   const customMetaTracked =
     analyticsResults[1].status === 'fulfilled' && analyticsResults[1].value;
@@ -517,7 +517,7 @@ export async function POST(request: Request) {
         page_url: pageUrl || null,
         referrer: referrer || attribution.referrer || null,
         attribution: attribution || null,
-        meta_tracked: leadTracked || customMetaTracked,
+        meta_tracked: registrationTracked || customMetaTracked,
         tiktok_tracked: tikTokTracked,
         status: 'complete',
       },
@@ -591,7 +591,7 @@ export async function POST(request: Request) {
     eventId,
     generationId: generation?.id || generationId,
     image: encodedImage,
-    metaTracked: leadTracked || customMetaTracked,
+    metaTracked: registrationTracked || customMetaTracked,
     prompt,
     tikTokTracked,
   });

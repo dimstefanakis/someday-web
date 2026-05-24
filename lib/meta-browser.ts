@@ -165,7 +165,7 @@ export function trackMetaMemoryCreated(
   trackMetaBrowserEvent({
     customData: payload,
     eventId,
-    eventName: 'Lead',
+    eventName: 'CompleteRegistration',
   });
 }
 
